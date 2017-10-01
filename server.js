@@ -56,8 +56,10 @@ app.get('/drawingroom', function (req, res) {
 });
 app.get('/drawingroom/:roomId', function (req, res) {
    console.log(req.params);
-   if (req.params.roomId === 'room.js') {
-      res.sendFile( _staticPath + "room.js" );
+   if (req.params.roomId === 'room.js' ||
+       req.params.roomId === 'my_ws.js' ||
+       req.params.roomId === 'drawingboard.js') {
+      res.sendFile( _staticPath + req.params.roomId );
    } else {
       console.log('get /* request');
       res.sendFile( _staticPath + "drawingroom.html" );

@@ -1,91 +1,24 @@
-var host = window.document.location.host.replace(/:.*/, '');
-var room = window.location.pathname.split('/').pop();
-console.log(room);
-var ws = new WebSocket('ws://' + host + ':' + location.port);
-ws.onopen = function() {
-    ws.send('hello server!');
-};
-ws.onmessage = function (event) {
-    var data = JSON.parse(event.data);
-    console.log(data);
-    if(data.type && data.type === 'draw' && data.room && data.room === room) {
-        paintFromMessage(data.color, data.lastX, data.lastY, data.nowX, data.nowY);
-    }
-};
+var $ui, host, room, controlPanel, colorSelectors;
+host = window.document.location.host.replace(/:.*/, '');
+room = window.location.pathname.split('/').pop();
 
-function sendWsMsg(data) {
-    data.room = room;
-    ws.send(JSON.stringify(data));
-}
+var WS = window.WS;
+var DrawingBoard = window.DrawingBoard;
+document.addEventListener('drawmsg', function(e) {
+    var data = JSON.parse(e.detail);
+    DrawingBoard.draw(data);
+});
+document.addEventListener('usrdraw', function(e) {
+    var data = e.detail;
+    WS.sendMsg(data);
+});
 
-var canvas = document.querySelector('#paint');
-var ctx = canvas.getContext('2d');
-
-var sketch = document.querySelector('#sketch');
-var sketch_style = getComputedStyle(sketch);
-canvas.width = parseInt(sketch_style.getPropertyValue('width'));
-canvas.height = parseInt(sketch_style.getPropertyValue('height'));
-
-var mouse = {x: 0, y: 0};
-var last_mouse = {x: 0, y: 0};
-
-/* Mouse Capturing Work */
-canvas.addEventListener('mousemove', function(e) {
-    last_mouse.x = mouse.x;
-    last_mouse.y = mouse.y;
-
-    mouse.x = e.pageX - this.offsetLeft;
-    mouse.y = e.pageY - this.offsetTop;
-}, false);
-
-/* Drawing on Paint App */
-ctx.lineWidth = 5;
-ctx.lineJoin = 'round';
-ctx.lineCap = 'round';
-ctx.strokeStyle = 'blue'; // default
-
-canvas.addEventListener('mousedown', function(e) {
-    canvas.addEventListener('mousemove', onPaint, false);
-}, false);
-
-canvas.addEventListener('mouseup', function() {
-    canvas.removeEventListener('mousemove', onPaint, false);
-}, false);
-
-var paintFromMessage = function(color, lastx, lasty, mousex, mousey) {
-    var currentStrokeStyle = ctx.strokeStyle;
-    ctx.beginPath();
-    ctx.moveTo(lastx, lasty);
-    ctx.lineTo(mousex, mousey);
-    ctx.closePath();
-    ctx.strokeStyle = color;
-    ctx.stroke();
-    ctx.strokeStyle = currentStrokeStyle;
-};
-var onPaint = function() {
-    ctx.beginPath();
-    ctx.moveTo(last_mouse.x, last_mouse.y);
-    ctx.lineTo(mouse.x, mouse.y);
-    ctx.closePath();
-    ctx.stroke();
-    sendWsMsg({
-        type: 'draw',
-        color: ctx.strokeStyle,
-        lastX: last_mouse.x,
-        lastY: last_mouse.y,
-        nowX: mouse.x,
-        nowY: mouse.y
-    });
-};
-
-var controlPanel = document.getElementById('controls');
+controlPanel = document.getElementById('controls');
 controlPanel.onclick = function() {
     controlPanel.classList.add('open');
 };
-canvas.addEventListener('click', function(e) {
-    controlPanel.classList.remove('open');
-});
 
-function setColor(color) {
-    ctx.strokeStyle = color;
+colorSelectors = document.getElementsByClassName('js-colorSelector');
+for(var i = 0; i < colorSelectors.length; i++) {
+    colorSelectors[i].addEventListener('click', DrawingBoard.setColor.bind(null, colorSelectors[i].getAttribute('data-color')));
 }

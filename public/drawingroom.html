@@ -27,17 +27,20 @@
 
 <body>
 <div id="controls">
-<ul>
-    <li onclick="setColor('blue')">blue</li>
-    <li onclick="setColor('green')">green</li>
-    <li onclick="setColor('red')">red</li>
-    <li onclick="setColor('black')">black</li>
-</ul>
+    <ul>
+        <li class="js-colorSelector" data-color="blue">blue</li>
+        <li class="js-colorSelector" data-color="green">green</li>
+        <li class="js-colorSelector" data-color="red">red</li>
+        <li class="js-colorSelector" data-color="black">black</li>
+    </ul>
 </div>
 <div id="sketch">
     <canvas id="paint"></canvas>
 </div>
 
 </body>
+<!--<script src="my_ws.js" type="text/javascript"></script>-->
+<script src="my_ws.js" type="text/javascript"></script>
+<script src="drawingboard.js" type="text/javascript"></script>
 <script src="room.js" type="text/javascript"></script>
 </html>
