@@ -1,4 +1,6 @@
 var host = window.document.location.host.replace(/:.*/, '');
+var room = window.location.pathname.split('/').pop();
+console.log(room);
 var ws = new WebSocket('ws://' + host + ':8080');
 ws.onopen = function() {
     ws.send('hello server!');
@@ -6,10 +8,15 @@ ws.onopen = function() {
 ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
     console.log(data);
-    if(data.type && data.type === 'draw') {
+    if(data.type && data.type === 'draw' && data.room && data.room === room) {
         paintFromMessage(data.color, data.lastX, data.lastY, data.nowX, data.nowY);
     }
 };
+
+function sendWsMsg(data) {
+    data.room = room;
+    ws.send(JSON.stringify(data));
+}
 
 var canvas = document.querySelector('#paint');
 var ctx = canvas.getContext('2d');
@@ -61,14 +68,14 @@ var onPaint = function() {
     ctx.lineTo(mouse.x, mouse.y);
     ctx.closePath();
     ctx.stroke();
-    ws.send(JSON.stringify({
+    sendWsMsg({
         type: 'draw',
         color: ctx.strokeStyle,
         lastX: last_mouse.x,
         lastY: last_mouse.y,
         nowX: mouse.x,
         nowY: mouse.y
-    }));
+    });
 };
 
 var controlPanel = document.getElementById('controls');

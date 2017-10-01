@@ -24,6 +24,7 @@
   "homepage": "https://github.com/kristenbrann/quickdraw#readme",
   "dependencies": {
     "express": "^4.16.1",
+    "uuid": "^3.1.0",
     "websocket": "^1.0.24",
     "ws": "^3.2.0"
   },
