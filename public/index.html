@@ -51,8 +51,9 @@
         }
     </style>
     <script type="text/javascript">
+        var host = window.document.location.host.replace(/:.*/, '');
         function createRoom() {
-            window.location = 'http://localhost:8080/drawingroom';
+            window.location = 'http://'+host+(location.port ? ':'+location.port: '')+'/drawingroom';
         }
         function openJoinModal() {
             document.getElementById('join-modal').classList.remove('hidden');
