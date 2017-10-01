@@ -1,7 +1,7 @@
 var host = window.document.location.host.replace(/:.*/, '');
 var room = window.location.pathname.split('/').pop();
 console.log(room);
-var ws = new WebSocket('ws://' + host + ':8080');
+var ws = new WebSocket('ws://' + host + ':' + location.port);
 ws.onopen = function() {
     ws.send('hello server!');
 };

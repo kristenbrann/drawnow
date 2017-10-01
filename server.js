@@ -2,17 +2,21 @@ const WebSocket = require('ws');
 var WebSocketServer = require('ws').Server;
 var express = require('express');
 var path = require('path');
+var http = require('http');
 const uuidv1 = require('uuid/v1');
-var server = require('http').createServer();
 
 var app = express();
-app.set('port', (process.env.PORT || 5000));
+var port = process.env.PORT || 5000;
+app.set('port', port);
+var server = http.createServer(app);
+var serverOnPort = server.listen(port);
+
 var rooms = [];
 
 app.use(express.static(path.join(__dirname, '/public')));
 var _staticPath = __dirname + "/public/";
 
-var wss = new WebSocketServer({server: server});
+var wss = new WebSocketServer({ server: server });
 wss.on('connection', function (ws) {
    ws.send('hello client!');
    console.log('started client connection');
