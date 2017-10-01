@@ -6,6 +6,7 @@ const uuidv1 = require('uuid/v1');
 var server = require('http').createServer();
 
 var app = express();
+app.set('port', (process.env.PORT || 5000));
 var rooms = [];
 
 app.use(express.static(path.join(__dirname, '/public')));
@@ -34,8 +35,8 @@ wss.on('connection', function (ws) {
 });
 
 server.on('request', app);
-server.listen(8080, function () {
-   console.log('Listening on http://localhost:8080');
+server.listen(app.get('port'), function() {
+   console.log("Node app is running at localhost:" + app.get('port'))
 });
 
 
