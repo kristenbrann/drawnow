@@ -1,0 +1,99 @@
+<html>
+<head>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+        #sketch {
+            height: 100%;
+            left: 25px;
+        }
+        #controls {
+            left: -80px;
+            width: 100px;
+            background-color: #a4a4a4;
+            height:100%;
+            position:absolute;
+            transition: left 0.5s;
+        }
+        #controls:hover {
+            left: -70px;
+        }
+        #controls.open {
+            left: 0px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="controls">
+<ul>
+    <li onclick="setColor('blue')">blue</li>
+    <li onclick="setColor('green')">green</li>
+    <li onclick="setColor('red')">red</li>
+    <li onclick="setColor('black')">black</li>
+</ul>
+</div>
+<div id="sketch">
+    <canvas id="paint"></canvas>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    var canvas = document.querySelector('#paint');
+    var ctx = canvas.getContext('2d');
+
+    var sketch = document.querySelector('#sketch');
+    var sketch_style = getComputedStyle(sketch);
+    canvas.width = parseInt(sketch_style.getPropertyValue('width'));
+    canvas.height = parseInt(sketch_style.getPropertyValue('height'));
+
+    var mouse = {x: 0, y: 0};
+    var last_mouse = {x: 0, y: 0};
+
+    /* Mouse Capturing Work */
+    canvas.addEventListener('mousemove', function(e) {
+        last_mouse.x = mouse.x;
+        last_mouse.y = mouse.y;
+
+        mouse.x = e.pageX - this.offsetLeft;
+        mouse.y = e.pageY - this.offsetTop;
+    }, false);
+
+    /* Drawing on Paint App */
+    ctx.lineWidth = 5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'blue'; // default
+
+    canvas.addEventListener('mousedown', function(e) {
+        canvas.addEventListener('mousemove', onPaint, false);
+    }, false);
+
+    canvas.addEventListener('mouseup', function() {
+        canvas.removeEventListener('mousemove', onPaint, false);
+    }, false);
+
+    var onPaint = function() {
+        ctx.beginPath();
+        ctx.moveTo(last_mouse.x, last_mouse.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.closePath();
+        ctx.stroke();
+    };
+
+    var controlPanel = document.getElementById('controls');
+    controlPanel.onclick = function() {
+        controlPanel.classList.add('open');
+    };
+    canvas.addEventListener('click', function(e) {
+        controlPanel.classList.remove('open');
+    });
+
+    function setColor(color) {
+        ctx.strokeStyle = color;
+    }
+
+</script>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "quickdraw",
+  "version": "1.0.0",
+  "description": "real time collaborative drawing",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kristenbrann/quickdraw.git"
+  },
+  "keywords": [
+    "interactive",
+    "drawing",
+    "multiuser",
+    "realtime"
+  ],
+  "author": "kbrann",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kristenbrann/quickdraw/issues"
+  },
+  "homepage": "https://github.com/kristenbrann/quickdraw#readme",
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}
